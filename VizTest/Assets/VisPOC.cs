@@ -93,9 +93,14 @@ public class VisPOC : MonoBehaviour {
 
 	public int i;
 	int j;
+
+		float camX;
+		float camY;
 	public GameObject cube;
 	public GameObject cube2;
 	public GameObject cube3;
+		public GameObject cube4;
+		public GameObject cube5;
 		float CamPos;
 
 	public int showPos;
@@ -122,7 +127,7 @@ public class VisPOC : MonoBehaviour {
 		
 		var OrderTrimmedDataset = csv.lst
 			.Where(c => c.episodeList.Count > 3)
-				.OrderBy(c => c.episodeList[0].date)
+					.OrderBy(c => c.SeriesName)//.episodeList[0].date)
 				;
 		//Console.WriteLine("{0}",OrderTrimmedDataset.Count());
 		
@@ -186,6 +191,48 @@ public class VisPOC : MonoBehaviour {
 				l++;
 			}
 
+			l = 0;
+			m = getYearData(1991, OrderTrimmedDataset.ToList());
+			foreach (BroadcastStruct b in m)
+			{
+				UnityEngine.Object spawner;
+				float angle = 2 * Mathf.PI / m.Count();
+				
+				float x = 65 * Mathf.Sin(angle * l);
+				float y = 65 * Mathf.Cos (angle * l);
+				string name = "cube" + l.ToString() + "-4";
+				spawner = GameObject.Instantiate(cube4, new Vector3(x, y, 45), Quaternion.Euler(0,0,0));
+				spawner.name = name;
+				
+				GameObject.Find(name).transform.parent = GameObject.Find("Ring4").transform;
+				
+				GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
+				GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
+				
+				l++;
+			}
+
+			l = 0;
+			m = getYearData(1992, OrderTrimmedDataset.ToList());
+			foreach (BroadcastStruct b in m)
+			{
+				UnityEngine.Object spawner;
+				float angle = 2 * Mathf.PI / m.Count();
+				
+				float x = 65 * Mathf.Sin(angle * l);
+				float y = 65 * Mathf.Cos (angle * l);
+				string name = "cube" + l.ToString() + "-5";
+				spawner = GameObject.Instantiate(cube5, new Vector3(x, y, 60), Quaternion.Euler(0,0,0));
+				spawner.name = name;
+				
+				GameObject.Find(name).transform.parent = GameObject.Find("Ring5").transform;
+				
+				GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
+				GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
+				
+				l++;
+			}
+
 	}
 
 	void Update() {
@@ -206,6 +253,38 @@ public class VisPOC : MonoBehaviour {
 			}
 		}
 
+			if (Input.GetMouseButton (0)) {
+				if (Input.GetAxis ("Mouse X") < 0) {
+					camX -= 1f;
+					if (camX < -55)
+						camX = -55;
+				}
+				if (Input.GetAxis ("Mouse X") > 0) {
+					camX += 1f;
+					if (camX > 55)
+						camX = 55;
+
+				}
+				if (Input.GetAxis ("Mouse Y") < 0) {
+					camY += 1f;
+					if (camY > 55)
+						camY = 55;
+				}
+				if (Input.GetAxis ("Mouse Y") > 0) {
+
+					camY -= 1f;
+					if (camY < -55)
+						camY = -55;
+
+				}
+
+			} else {
+				if (camX != 0)
+					camX = camX * 0.75f;
+				if (camY != 0)
+					camY = camY * 0.75f;
+			}
+			Camera.main.transform.rotation = Quaternion.Euler (31.5f + camY, camX, 0f);
 		GameObject ring = GameObject.Find ("Global");
 		if (xvalue > 0)
 			ring.transform.rotation = Quaternion.Euler (0, 0, xvalue);

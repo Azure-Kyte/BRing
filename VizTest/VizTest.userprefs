@@ -1,9 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ShowInfo.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\VisPOC.cs">
     <Files>
-      <File FileName="Assets\VisPOC.cs" Line="218" Column="18" />
-      <File FileName="Assets\ShowInfo.cs" Line="90" Column="30" />
+      <File FileName="Assets\VisPOC.cs" Line="130" Column="33" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
