@@ -56,12 +56,8 @@ namespace VisPOC {
 			date = DateTime.ParseExact(Date,"yyyy/MM/dd",null);
 		}
 	}
-	
 
-
-
-public class VisPOC : MonoBehaviour {
-
+	public class VisPOC : MonoBehaviour {
 	
 		public static List<BroadcastStruct> getYearData(int year, List<BroadcastStruct> lst)
 		{
@@ -77,181 +73,101 @@ public class VisPOC : MonoBehaviour {
 					}
 				}
 			}
-			/*foreach (BroadcastStruct b in newList)
-			{
-				for (int i = 0;i<b.episodeList.Count;i++)
-				{
-					if ((b.episodeList[i].date.Year <= year))
-					{
-						b.episodeList.RemoveRange(i,b.episodeList.Count()-i);
-					}
-				}
-			}*/
 			return newList.ToList();
 			
 		}
 
-	public int i;
-	int j;
-
+		public int i;
+		int j;
+		public float Radius;
 		float camX;
 		float camY;
-	public GameObject cube;
-	public GameObject cube2;
-	public GameObject cube3;
-		public GameObject cube4;
-		public GameObject cube5;
+		float CamHeight;
+		public GameObject[] Nodes = new GameObject[40];
 		float CamPos;
+		public GameObject Ring;
 
-	public int showPos;
-	BroadcastStruct ep;
-	public int episodeCount;
-	public int epNum;
-	public float[] distances = new float[764];
-	int xvalue;
-	public string test;
+		public int showPos;
+		BroadcastStruct ep;
+		public int episodeCount;
+		public int epNum;
+		public float[] distances = new float[764];
+		int xvalue;
+		public string test;
 		int l;
-	void Start () {
-
-		var csv = new CSVImport
-		{
-			CSVFile = "./Assets/ABC data 50000.csv"
-		};
-		
-		csv.StartImport();
-		
-		/*foreach (BroadcastStruct b in csv.lst)
-		{
-			b.order();
-		}*/
-		
-		var OrderTrimmedDataset = csv.lst
-			.Where(c => c.episodeList.Count > 3)
-					.OrderBy(c => c.SeriesName)//.episodeList[0].date)
-				;
-		//Console.WriteLine("{0}",OrderTrimmedDataset.Count());
-		
-
-		var m = getYearData(1988, OrderTrimmedDataset.ToList());
-		foreach (BroadcastStruct b in m)
-		{
-				UnityEngine.Object spawner;
-				float angle = 2 * Mathf.PI / m.Count();
-				
-				float x = 65 * Mathf.Sin(angle * l);
-				float y = 65 * Mathf.Cos (angle * l);
-				string name = "cube" + l.ToString();
-				spawner = GameObject.Instantiate(cube, new Vector3(x, y, 0), Quaternion.Euler(0,0,0));
-				spawner.name = name;
-				
-				GameObject.Find(name).transform.parent = GameObject.Find("Ring").transform;
-				GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
-				GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
-				l++;
-		}
-			l = 0;
-			m = getYearData(1989, OrderTrimmedDataset.ToList());
-			foreach (BroadcastStruct b in m)
+		void Start () {
+				CamHeight = Camera.main.transform.position.y;
+				CamPos = -15;
+			var csv = new CSVImport
 			{
+				CSVFile = Application.dataPath + "/ABC data 35000.csv"
+			};
+			
+			csv.StartImport();
+			
+			var OrderTrimmedDataset = csv.lst
+				.Where(c => c.episodeList.Count > 3)
+						.OrderBy(c => c.SeriesName);
+
+
+			for (int i = 0; i < 7; i++){
+				var m = getYearData((1978 + i), OrderTrimmedDataset.ToList());
+				l = 0;
 				UnityEngine.Object spawner;
-				float angle = 2 * Mathf.PI / m.Count();
-				
-				float x = 65 * Mathf.Sin(angle * l);
-				float y = 65 * Mathf.Cos (angle * l);
-				string name = "cube" + l.ToString() + "-2";
-				spawner = GameObject.Instantiate(cube2, new Vector3(x, y, 15), Quaternion.Euler(0,0,0));
-				spawner.name = name;
-				
-				GameObject.Find(name).transform.parent = GameObject.Find("Ring2").transform;
+				spawner = GameObject.Instantiate(Ring, new Vector3(0,0,i * 15), Quaternion.Euler(0,0,0));
+				if (i == 0){
+					spawner.name = "Ring"; 
+					GameObject.Find("Ring").transform.parent = GameObject.Find("Global").transform;
+				}
+				else {
+					spawner.name = "Ring" + (i + 1).ToString ();
+					GameObject.Find("Ring" + (i + 1).ToString()).transform.parent = GameObject.Find("Global").transform;
+				}
+				foreach (BroadcastStruct b in m)
+				{
 
-				GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
-				GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
+					float angle = 2 * Mathf.PI / m.Count();
+					
+					float x = Radius * Mathf.Sin(angle * l);
+					float y = Radius * Mathf.Cos (angle * l);
+					string name = "cube" + l.ToString();
+					if (i > 0)
+						name = "cube" + l.ToString() + "-" + (i + 1).ToString(); 
+					spawner = GameObject.Instantiate(Nodes[i], new Vector3(x, y, i * 15), Quaternion.Euler(0,0,0));
+					spawner.name = name;
 
-				l++;
-			}
-
-			l = 0;
-			m = getYearData(1990, OrderTrimmedDataset.ToList());
-			foreach (BroadcastStruct b in m)
-			{
-				UnityEngine.Object spawner;
-				float angle = 2 * Mathf.PI / m.Count();
-				
-				float x = 65 * Mathf.Sin(angle * l);
-				float y = 65 * Mathf.Cos (angle * l);
-				string name = "cube" + l.ToString() + "-3";
-				spawner = GameObject.Instantiate(cube3, new Vector3(x, y, 30), Quaternion.Euler(0,0,0));
-				spawner.name = name;
-				
-				GameObject.Find(name).transform.parent = GameObject.Find("Ring3").transform;
-				
-				GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
-				GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
-				
-				l++;
-			}
-
-			l = 0;
-			m = getYearData(1991, OrderTrimmedDataset.ToList());
-			foreach (BroadcastStruct b in m)
-			{
-				UnityEngine.Object spawner;
-				float angle = 2 * Mathf.PI / m.Count();
-				
-				float x = 65 * Mathf.Sin(angle * l);
-				float y = 65 * Mathf.Cos (angle * l);
-				string name = "cube" + l.ToString() + "-4";
-				spawner = GameObject.Instantiate(cube4, new Vector3(x, y, 45), Quaternion.Euler(0,0,0));
-				spawner.name = name;
-				
-				GameObject.Find(name).transform.parent = GameObject.Find("Ring4").transform;
-				
-				GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
-				GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
-				
-				l++;
-			}
-
-			l = 0;
-			m = getYearData(1992, OrderTrimmedDataset.ToList());
-			foreach (BroadcastStruct b in m)
-			{
-				UnityEngine.Object spawner;
-				float angle = 2 * Mathf.PI / m.Count();
-				
-				float x = 65 * Mathf.Sin(angle * l);
-				float y = 65 * Mathf.Cos (angle * l);
-				string name = "cube" + l.ToString() + "-5";
-				spawner = GameObject.Instantiate(cube5, new Vector3(x, y, 60), Quaternion.Euler(0,0,0));
-				spawner.name = name;
-				
-				GameObject.Find(name).transform.parent = GameObject.Find("Ring5").transform;
-				
-				GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
-				GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
-				
-				l++;
-			}
-
-	}
-
-	void Update() {
-		if (Input.GetMouseButton (1)) {
-			if (Input.GetAxis ("Mouse X") < 0) {
-				if (Input.GetKey (KeyCode.LeftShift))
-					xvalue -= 4;
-				xvalue--;
-				if (xvalue < 0)
-					xvalue = 360;
-			}
-			if (Input.GetAxis ("Mouse X") > 0) {
-				if (Input.GetKey (KeyCode.LeftShift))
-					xvalue += 4;
-				xvalue++;
-				if (xvalue > 360)
-					xvalue = 0;
+					if (i == 0)
+						GameObject.Find(name).transform.parent = GameObject.Find("Ring").transform;
+					else
+						GameObject.Find(name).transform.parent = GameObject.Find("Ring" + (i + 1).ToString()).transform;
+					GameObject.Find(name).GetComponent<ShowInfo>().Showname = b.SeriesName;
+					GameObject.Find(name).GetComponent<ShowInfo>().episodes = b.episodeList.Count();
+					l++;
+				}
 			}
 		}
+
+
+		void Update() {
+			if (Input.GetKeyDown(KeyCode.Escape))
+					Application.Quit();
+			
+			if (Input.GetMouseButton (1)) {
+				if (Input.GetAxis ("Mouse X") < 0) {
+					if (Input.GetKey (KeyCode.LeftShift))
+						xvalue -= 4;
+					xvalue--;
+					if (xvalue < 0)
+						xvalue = 360;
+				}
+				if (Input.GetAxis ("Mouse X") > 0) {
+					if (Input.GetKey (KeyCode.LeftShift))
+						xvalue += 4;
+					xvalue++;
+					if (xvalue > 360)
+						xvalue = 0;
+				}
+			}
 
 			if (Input.GetMouseButton (0)) {
 				if (Input.GetAxis ("Mouse X") < 0) {
@@ -284,29 +200,38 @@ public class VisPOC : MonoBehaviour {
 				if (camY != 0)
 					camY = camY * 0.75f;
 			}
+			
 			Camera.main.transform.rotation = Quaternion.Euler (31.5f + camY, camX, 0f);
-		GameObject ring = GameObject.Find ("Global");
-		if (xvalue > 0)
-			ring.transform.rotation = Quaternion.Euler (0, 0, xvalue);
-		else
-			ring.transform.rotation = Quaternion.Euler (0, 0, 0);
+			GameObject ring = GameObject.Find ("Global");
+			if (xvalue > 0)
+				ring.transform.rotation = Quaternion.Euler (0, 0, xvalue);
+			else
+				ring.transform.rotation = Quaternion.Euler (0, 0, 0);
 
-		if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
+			if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
 				CamPos -= 2;
 				if (CamPos < -15) {
 					CamPos = -15;
-			
 				}
-		} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
+			} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
 				CamPos += 2;
-			if (CamPos > 3*15){
-				CamPos = 3*15;
+				if (CamPos > 7*15){
+					CamPos = 7*15;
+				}
 			}
+			Camera.main.transform.position = new Vector3(0,CamHeight, CamPos);
 		}
 
-		Camera.main.transform.position = new Vector3(0,69, CamPos);
-		
-		
+
+		void OnGUI () {
+			GUI.Label(new Rect(45,45,500,250), "Controls:");
+			GUI.Label(new Rect(45,65,500,250), "Right Mouse Button + Mouse Left/Right: Rotate visualisation");
+			GUI.Label(new Rect(45,85,500,250), "+ Shift Key: Speed up Rotation");
+			GUI.Label(new Rect(45,105,500,250), "Left Mouse Button + Mouse Left/Right/Up/Down: Freecam");
+			GUI.Label(new Rect(45,125,500,250), "Scrollwheel: Move Forward/Backwards");
+            GUI.Label(new Rect(45,145,500,250), "Esc: Exit");
+
+			
+		}
 	}
-}
 }

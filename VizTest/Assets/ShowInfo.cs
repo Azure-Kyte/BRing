@@ -54,6 +54,18 @@ public class ShowInfo : MonoBehaviour {
 
 	}
 	void Update () {
+		/*float Distance = Vector3.Distance(transform.position, Camera.main.transform.position);
+		if (Distance > 105f) {
+			transform.GetComponent<MeshRenderer>().enabled = false;
+			if (hasLine)
+				transform.GetComponent<LineRenderer>().enabled = false;
+		}
+		else {
+			transform.GetComponent<MeshRenderer>().enabled = true;
+			if (hasLine)
+				transform.GetComponent<LineRenderer>().enabled = true;
+		}*/
+
 		if (shrink) {
 			if (width > 0.2f)
 				width -= 0.005f;

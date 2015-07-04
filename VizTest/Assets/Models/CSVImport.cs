@@ -35,31 +35,34 @@ namespace ABCTVBroadcast.Models
                         rows_lst.Add(cleanField(m.Value));
                     rows = rows_lst.ToArray();
 
-                    seriesTitle = rows[6];
-                    epiTitle = rows[5];
+					if (rows[6] != "")
+					{
+	                    seriesTitle = rows[6];
+	                    epiTitle = rows[5];
 
-                    var newEpisode = new EpisodeStruct(
-                        ProgramName: epiTitle, 
-                        Region: rows[0], 
-                        Date: rows[1]
-                    );
+	                    var newEpisode = new EpisodeStruct(
+	                        ProgramName: epiTitle, 
+	                        Region: rows[0], 
+	                        Date: rows[1]
+	                    );
 
-                    bool found=false;
-					foreach (VisPOC.BroadcastStruct b in lst)
-                    {
-                        if (b.SeriesName == seriesTitle)
-                        {
-                            b.episodeList.Add(newEpisode);
-                            found = true;
-                            break;
-                        }
-                    }
+	                    bool found=false;
+						foreach (VisPOC.BroadcastStruct b in lst)
+	                    {
+	                        if (b.SeriesName == seriesTitle)
+	                        {
+	                            b.episodeList.Add(newEpisode);
+	                            found = true;
+	                            break;
+	                        }
+	                    }
 
-                    if (!found)
-                    {
-						VisPOC.BroadcastStruct newSeries = new VisPOC.BroadcastStruct(seriesTitle, newEpisode);
-                        lst.Add(newSeries);
-                    }                    
+	                    if (!found)
+	                    {
+							VisPOC.BroadcastStruct newSeries = new VisPOC.BroadcastStruct(seriesTitle, newEpisode);
+	                        lst.Add(newSeries);
+						}    
+					}                
                 }
 
 
@@ -69,12 +72,12 @@ namespace ABCTVBroadcast.Models
 
         private string cleanField(string s)
         {
-            if (s.StartsWith("\"") || s.StartsWith("'"))
+			if (s.StartsWith("\"") || s.StartsWith("'") || s.StartsWith(@""""))
             {
                 s = s.Substring(1, s.Length - 1);
             }
 
-            if (s.EndsWith("\"") || s.EndsWith("'"))
+			if (s.EndsWith("\"") || s.EndsWith("'") || s.EndsWith(@""""))
             {
                 s = s.Substring(0, s.Length - 1);
             }
