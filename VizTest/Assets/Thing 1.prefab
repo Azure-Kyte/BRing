@@ -237,6 +237,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Showname: 
   episodes: 0
+  Ring: 0
+  hasChild: 0
   hasLine: 1
   obj: {fileID: 0}
 --- !u!120 &12000576
@@ -338,6 +340,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Parameters.m_StartColor.rgba
       value: 2516582399
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: Ring
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

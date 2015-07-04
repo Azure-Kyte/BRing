@@ -6,10 +6,14 @@ public class ShowInfo : MonoBehaviour {
 	public string Showname;
 	public int episodes;
 	LineRenderer line;
-	bool hasChild;
+	public int Ring;
+	public bool hasChild;
 	public bool hasLine;
+	public bool onTop;
 	float width;
 	bool shrink;
+	GameObject LinkedObject;
+	Color col;
 	public GameObject obj;
 	void Start () {
 		width = Random.Range (0.2f, 0.5f);
@@ -20,13 +24,30 @@ public class ShowInfo : MonoBehaviour {
 
 		if (hasLine){
 			line = GetComponent<LineRenderer> ();
-			line.SetColors(new Color(Random.Range(0.6f,1f),Random.Range(0.6f,1f),Random.Range(0.6f,1f), 0.35f), new Color(1,1,1,0.35f));
+			col = new Color(Random.Range(0.2f,1f),Random.Range(0.2f,1f),Random.Range(0.2f,1f), 0.35f);
 
-			foreach(Transform child in GameObject.Find ("Ring").transform){
-				ShowInfo info = child.GetComponent<ShowInfo>();
-				if (Showname == info.Showname){
-					obj = child.gameObject;
-					hasChild = true;
+			line.SetColors(col, new Color(1,1,1,0.35f));
+			if (Ring == -1){
+			}
+			else if (Ring == 0){
+				foreach(Transform child in GameObject.Find ("Ring").transform){
+					ShowInfo info = child.GetComponent<ShowInfo>();
+					if (Showname == info.Showname){
+						info.LinkedObject = gameObject;
+						obj = child.gameObject;
+						hasChild = true;
+						break;
+					}
+				}
+			} else {
+				foreach(Transform child in GameObject.Find ("Ring" + Ring.ToString()).transform){
+					ShowInfo info = child.GetComponent<ShowInfo>();
+					if (Showname == info.Showname){
+						info.LinkedObject = gameObject;
+						obj = child.gameObject;
+						hasChild = true;
+						break;
+					}
 				}
 			}
 		}
@@ -57,11 +78,24 @@ public class ShowInfo : MonoBehaviour {
 	}
 
 	void OnMouseOver () {
+		if (LinkedObject != null) {
+
+
+			LineRenderer lines = LinkedObject.GetComponent<LineRenderer>();
+			lines.SetColors (new Color (col.r, col.g, col.b, 0.85f), new Color (1, 1, 10.85f));
+		}
+
 		transform.FindChild("TestObject").GetComponent<TextMesh>().text = Showname;	
 		transform.FindChild ("Plane").GetComponent<MeshRenderer> ().enabled = true;
 		transform.FindChild ("Plane").transform.rotation = Quaternion.Euler (-90, 0, 0);
 	}
 	void OnMouseExit () {
+		if (LinkedObject != null) {
+			LineRenderer lines = LinkedObject.GetComponent<LineRenderer> ();
+			lines.SetColors (new Color (col.r, col.g, col.b, 0.35f), new Color (1, 1, 1,0.35f));
+		}
+
+
 		transform.FindChild("TestObject").GetComponent<TextMesh>().text = "";
 		transform.FindChild ("Plane").GetComponent<MeshRenderer> ().enabled = false;
 	}
